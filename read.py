@@ -1,5 +1,6 @@
 import serial
 import time
+import urllib2, json
 
 # specify Arduino being used
 serial_port_name = '/dev/cu.usbmodem1d1141' # for Mac 
@@ -23,6 +24,11 @@ def loop():
             x = ser.readline() 
             # split data between readings
             print "Arduino said", x
+            opener = urllib2.build_opener(urllib2.HTTPHandler)
+            request = urllib2.Request('http://38fb5ff1.ngrok.io/one/api/v1.0/points/1', data='{"points": 1}')
+            request.add_header('Content-Type', 'application/json')
+            request.get_method = lambda: 'PUT'
+            response = urllib2.urlopen(request)
         except:
             print "Error with reporting readings"
 
